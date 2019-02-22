@@ -377,6 +377,7 @@ get_gene_cluster <- function(sorted_matrix, cls_num = 8){
 #'gene_state_result <- calc_all_hmm_diff_parallel(selected_result, cls_num = 2, threadnum = 4) 
 #'inferred_gene_cluster <- get_gene_cluster(sorted_matrix = gene_state_result, cls_num = 2)
 #'GO_summary_result <- infer_GO_summaries(inferred_gene_cluster, organism = "hsapiens")
+#'plot(GO_summary_result, fontsize = 8)
 
 infer_GO_summaries <- function(gene_cluster, organism="hsapiens"){
   n_cls <- length(unique(gene_cluster))
@@ -389,13 +390,25 @@ infer_GO_summaries <- function(gene_cluster, organism="hsapiens"){
   }
 
   g1_list <- list(tmp_geneset)
-  names(g1_list) <- toupper(name_list)
-  
-  go_summary_results <- gosummaries(g1_list, organism)
+  #names(g1_list) <- toupper(name_list)
+  print(str(g1_list[[1]]))
+  #pritn("1")
+  go_summary_results <- gosummaries(g1_list[[1]], organism = organism)
   plot(go_summary_results, fontsize = 8)
   return(go_summary_results)
 }
 
+gene_cluster_colors <- 
+  c(
+    "1" = "#97CE68",
+    "2" = "#F2F28B", #554E44
+    "3" = "#F8C765",
+    "4" = "#FA723E",
+    "5" = "#554E44", #FF9900
+    "6" = "#9F80DF",
+    "7" = "#F58F8F",
+    "8" = "#FF9900" #F2F28B #554E44
+  )
 #' Heatmap Analysis
 #' 
 #' Comprehensive heatmap plot function with gene cluster and cell type labels. 
@@ -403,7 +416,7 @@ infer_GO_summaries <- function(gene_cluster, organism="hsapiens"){
 #'@param sorted_matrix This can be either the HMM matrix or the sorted gene selection matrix obtained from earlier functions.
 #'@param pseudo_time Pseudo development time
 #'@param cell_labels Defaults to NULL. The cell type labels.
-#'@param gene_cluster The inferred gene cluster results using hierarchical clustering (result from get_gene_cluster function)
+#'@param gene_cluster Defaults to NULL. It can be automatically caluclated with defualt gene cluster of 8. Or user can define the inferred gene cluster results using hierarchical clustering (get_gene_cluster) or by other means. Note that the input must match for the input matrix (ie gene / hmm)
 #'@param heading Plot title
 #'@param input_type "hmm" or "gene". Please specify type of sorted matrix input to the function. 
 #'@export
@@ -415,21 +428,32 @@ infer_GO_summaries <- function(gene_cluster, organism="hsapiens"){
 #'inferred_gene_cluster <- get_gene_cluster(sorted_matrix = gene_state_result, cls_num = 8)
 #'heatmap_plot <- plot_heatmap_analysis(sorted_matrix = inferred_gene_cluster, redpath_pseudotime, cell_labels = NULL, gene_cluster = inferred_gene_cluster, input_type = "hmm")
 
-plot_heatmap_analysis <- function(sorted_matrix, pseudo_time, cell_labels = NULL, gene_cluster, heading = "HEATMAP", input_type = "hmm"){
+plot_heatmap_analysis <- function(sorted_matrix, pseudo_time, cell_labels = NULL, gene_cluster=NULL, heading = "HEATMAP", input_type = "hmm"){
   
+  if(is.null(gene_cluster)){
+    gene_cluster <- get_gene_cluster(sorted_matrix)
+  }
+  
+  gene_cluster_col <- as.character(gene_cluster_colors[as.character(gene_cluster)])
+  cell_unique_lab <- unique(cell_labels)
+  cell_lab_col <- redpath_cols()[c(1:length(cell_unique_lab))]
+  names(cell_lab_col) <- cell_unique_lab
+
+  cell_label_col <- as.character(cell_lab_col[as.character(cell_labels)])
   if(input_type == "hmm"){
     if(is.null(cell_labels)){
       h1 <- 
         heatmap.2(as.matrix(sorted_matrix), scale="none", col=c("#F2F2F2BF", "#FF0000BF"), 
                   #ColSideColors = cell_labels[order(pseudo_time))], 
-                  RowSideColors = gene_cluster,  
+                  RowSideColors = gene_cluster_col,  
                   key=TRUE, keysize = 1.4, symkey=F, density.info="none", trace="none", offsetRow = 0, offsetCol = 0, cexCol = 0.1, cexRow=0.1, 
                   dendrogram = "none", Colv = F, labRow = FALSE, labCol = FALSE, 
                   main = heading, xlab = "Pseudo-Time", ylab = "Genes")
     }else{
-      heatmap.2(as.matrix(sorted_matrix), scale="none", col =c("#F2F2F2BF", "#FF0000BF"), 
-                ColSideColors = cell_labels[order(pseudo_time)], 
-                RowSideColors = gene_cluster,  
+      h1 <- 
+        heatmap.2(as.matrix(sorted_matrix), scale="none", col =c("#F2F2F2BF", "#FF0000BF"), 
+                ColSideColors = cell_label_col[order(pseudo_time)], 
+                RowSideColors = gene_cluster_col,  
                 key=TRUE, keysize = 1.4, symkey=F, density.info="none", trace="none", offsetRow = 0, offsetCol = 0, cexCol = 0.1, cexRow=0.1, 
                 dendrogram = "none", Colv = F, labRow = FALSE, labCol = FALSE, 
                 main = heading, xlab = "Pseudo-Time", ylab = "Genes")
@@ -439,15 +463,15 @@ plot_heatmap_analysis <- function(sorted_matrix, pseudo_time, cell_labels = NULL
       h1 <- 
         heatmap.2(as.matrix(sorted_matrix), scale="none", col = rev(heat.colors(n = 12, alpha = 1)), 
                   #ColSideColors = cell_labels[order(pseudo_time))], 
-                  RowSideColors = mgh107_gene_cluster_col, #as.character(mgh107_gene_cluster), 
+                  RowSideColors = gene_cluster_col, #as.character(mgh107_gene_cluster), 
                   key=TRUE, keysize = 1.4, symkey=F, density.info="none", trace="none", offsetRow = 0, offsetCol = 0, cexCol = 0.1, cexRow=0.1, 
                   dendrogram = "none", Colv = F, labRow = FALSE, labCol = FALSE, 
                   main = heading, xlab = "Pseudo-Time", ylab = "Genes")
     }else{
       h1 <- 
         heatmap.2(as.matrix(sorted_matrix), scale="none", col = rev(heat.colors(n = 12, alpha = 1)), 
-                  ColSideColors = cell_labels[order(pseudo_time)], 
-                  RowSideColors = mgh107_gene_cluster_col, #as.character(mgh107_gene_cluster), 
+                  ColSideColors = cell_label_col[order(pseudo_time)], 
+                  RowSideColors = gene_cluster_col, #as.character(mgh107_gene_cluster), 
                   key=TRUE, keysize = 1.4, symkey=F, density.info="none", trace="none", offsetRow = 0, offsetCol = 0, cexCol = 0.1, cexRow=0.1, 
                   dendrogram = "none", Colv = F, labRow = FALSE, labCol = FALSE, 
                   main = heading, xlab = "Pseudo-Time", ylab = "Genes")

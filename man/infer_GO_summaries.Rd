@@ -23,5 +23,6 @@ selected_result <- gene_selection(full_exprs_matrix, redpath_pseudotime, dcor_re
 gene_state_result <- calc_all_hmm_diff_parallel(selected_result, cls_num = 2, threadnum = 4) 
 inferred_gene_cluster <- get_gene_cluster(sorted_matrix = gene_state_result, cls_num = 2)
 GO_summary_result <- infer_GO_summaries(inferred_gene_cluster, organism = "hsapiens")
+plot(GO_summary_result, fontsize = 8)
 }
 \keyword{infer_GO_summaries}

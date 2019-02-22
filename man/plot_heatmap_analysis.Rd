@@ -5,7 +5,7 @@
 \title{Heatmap Analysis}
 \usage{
 plot_heatmap_analysis(sorted_matrix, pseudo_time, cell_labels = NULL,
-  gene_cluster, heading = "HEATMAP", input_type = "hmm")
+  gene_cluster = NULL, heading = "HEATMAP", input_type = "hmm")
 }
 \arguments{
 \item{sorted_matrix}{This can be either the HMM matrix or the sorted gene selection matrix obtained from earlier functions.}
@@ -14,7 +14,7 @@ plot_heatmap_analysis(sorted_matrix, pseudo_time, cell_labels = NULL,
 
 \item{cell_labels}{Defaults to NULL. The cell type labels.}
 
-\item{gene_cluster}{The inferred gene cluster results using hierarchical clustering (result from get_gene_cluster function)}
+\item{gene_cluster}{Defaults to NULL. It can be automatically caluclated with defualt gene cluster of 8. Or user can define the inferred gene cluster results using hierarchical clustering (get_gene_cluster) or by other means. Note that the input must match for the input matrix (ie gene / hmm)}
 
 \item{heading}{Plot title}
 

@@ -4,7 +4,7 @@ redPATH
 > redPATH reconstructs the pseudo development time of cell lineages in single-cell RNA-seq data. It formulates the problem of pseudo temporal ordering into a Hamiltonian path problem and attempts to recover the pseudo development time in single-cell RNA-seq datasets. We provide a comprehensive analysis software tool with robust performance. 
 
 
-<img src="https://github.com/tinglab/redPATH/sample_results/overview.png" alt="Overview" title="Overview" align="center" height="60" />
+<img src=sample_results/overview.png alt="Overview" title="Overview" align="center" height="60" />
 
 
 ## Table of content

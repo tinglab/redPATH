@@ -277,7 +277,7 @@ high_cor_path <- function(clust_num_EM, cell_gene_exprs, stageIdxSmp, HMT_iterat
       resultLst[t, ] <- ordResult
       norm_resultLst[t, ] <- normResult
     }
-    hist(tourLengthLst)
+    #hist(tourLengthLst)
     minLengthID <- which(tourLengthLst == min(tourLengthLst))[1]
   }
   

@@ -15,6 +15,7 @@
 redpath <- function(cell_gene_exprs, threadnum, step_size = 1, base_path_range = c(3:7), dist_type="KL2", clustMethod = "Corr")
 {
   max_loop = NULL
+  
   result <- bestEnsembleHMT(cell_gene_exprs = cell_gene_exprs, HMT_iterations = 2, beginNum = max(base_path_range), endNum = dim(cell_gene_exprs)[1], threads = threadnum, clustMethod = "Corr", 
                             dist_type = dist_type, base_path_range = base_path_range, step_size = step_size, max_loop = max_loop, max_num = 500)
   pseudotime <- result$ensemble_HMT_list[dim(result$ensemble_HMT_list)[1], ]

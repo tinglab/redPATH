@@ -78,7 +78,7 @@ get_HMM_order_diff <- function(exprs_val, ordIndex, cls_num)
     
     total_cells <- length(gene_exprs)
     sorted_val <- sort(gene_exprs)
-    set_percentage <- 0.3 * length(ordIndex)
+    set_percentage <- 0.33 * length(ordIndex)
     
     split_n = round(total_cells / cls_num)
     
@@ -99,6 +99,17 @@ get_HMM_order_diff <- function(exprs_val, ordIndex, cls_num)
     l_ind <- which.min(m_vec)
     h_ind <- which.max(m_vec)
     m_ind <- c(1:3)[-c(l_ind, h_ind)]#which(!c(l_ind, h_ind)%in%c(1:3))
+    
+    if((length(which(h1==l_ind))==1)){
+      w_m <- which.min(gene_exprs[which(h1==m_ind)])[1]
+      h1[which(h1==m_ind)[w_m]] <- m_ind
+    }else if(length(which(h1==h_ind))==1){
+      w_m <- which.max(gene_exprs[which(h1==m_ind)])[1]
+      h1[which(h1==m_ind)[w_m]] <- m_ind
+    }else if(length(which(h1==m_ind))==1){
+      w_h <- which.min(gene_exprs[which(h1==h_ind)])[1]
+      h1[which(h1==h_ind)[w_h]] <- h_ind
+    }
     low_val = data.frame(x1 = gene_exprs[which(h1==l_ind)])
     med_val = data.frame(x1 = gene_exprs[which(h1 == m_ind)])
     high_val = data.frame(x1 = gene_exprs[which(h1 == h_ind)])

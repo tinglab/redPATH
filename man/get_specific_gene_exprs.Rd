@@ -26,7 +26,7 @@ This prepares for the plotting function of multiple gene expressions along the p
 
 \examples{
 cdk_gene_exprs <- get_specific_gene_exprs(full_gene_exprs_data, gene_name = "cdk11", type = "grep", organism = "mm")
-plot_cdk <- plot_gene_exprs(cdk_gene_exprs, redpath_pseudotime, color_label = cell_type_label, order = T)
+plot_cdk <- plot_specific_gene_exprs(cdk_gene_exprs, redpath_pseudotime, color_label = cell_type_label, order = T)
 require(scater)
 multiplot(plotlist = plot_cdk, layout = matrix(c(1:2), 2, 1)) # For a total number of 2 plots
 }

@@ -17,7 +17,7 @@ require(doParallel)
 #'@export
 #'@examples
 #'subset_GO_data <- get_GO_exp(data, gene_type = "gene_names", organism = "human", takelog = F)
-#'filtered_GO_data <- filter_exp(subset_GO_data)
+#'filtered_GO_data <- filter_exp(subset_GO_data, dispersion_threshold = 10, threads = 2)
 #'
 get_GO_exp <- function(gene_cell_matrix, gene_type = "gene_names", organism = "mouse", takelog = T){
   gene_names <- rownames(gene_cell_matrix)
@@ -72,9 +72,10 @@ get_GO_exp <- function(gene_cell_matrix, gene_type = "gene_names", organism = "m
 #'@export
 #'@examples
 #'subset_GO_data <- get_GO_exp(data, gene_type = "gene_names", organism = "human", takelog = F)
-#'filtered_GO_data <- filter_exp(subset_GO_data)
+#'filtered_GO_data <- filter_exp(subset_GO_data, dispersion_threshold = 10, threads = 2)
 #'
 filter_exp <- function(cell_gene_matrix, dispersion_threshold = 10, threads = 2){
+  require(doParallel)
   exp_dispersion <- dispersion_ratio(t(cell_gene_matrix), threads = threads)
   print("Dispersion Summary")
   print(summary(exp_dispersion))
@@ -91,7 +92,7 @@ dispersion_ratio <- function(gene_cell_matrix, threads = 2){
   n_cells <- ncol(gene_cell_matrix)
   gene_cell_matrix <- gene_cell_matrix
   store_ratio <- c()
-  
+  require(doParallel)
   cl <- makeCluster(threads)
   registerDoParallel(cl)
   resultLst <- foreach(i = 1: m_genes, .combine=c) %dopar%

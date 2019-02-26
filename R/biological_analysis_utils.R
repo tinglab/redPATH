@@ -1,6 +1,5 @@
 # Post-Biological Analysis: Utility Functions
-require(minerva)
-require(energy)
+
 
 #' Calculate correlation of gene expression with pseudotime 
 #' 
@@ -18,6 +17,8 @@ require(energy)
 #'selected_result <- gene_selection(full_exprs_matrix, redpath_pseudotime, dcor_result, mic_result, threshold = 0.5)
 
 calc_correlation <- function(full_gene_exprs, pseudo_time, type = "dcor", order = F){ # dcor / mic
+  require(minerva)
+  require(energy)
   if(order == T){
     sorted_gene_exprs <- full_gene_exprs[,pseudo_time]
     #pt <- pseudo_time
@@ -138,7 +139,7 @@ calc_all_hmm_diff <- function(sorted_gene_exprs_matrix, cls_num){
 #source("D:/Single Cells/Single Cell Analysis/HMM code/baum_welch_code.R")
 #source("D:/Single Cells/Single Cell Analysis/HMM code/HMM.R")
 #source("D:/Single Cells/Single Cell Analysis/HMM code/get_hmm_code.R")
-require(doParallel)
+
 
 #' HMM segmentation for each gene
 #' 
@@ -156,6 +157,7 @@ require(doParallel)
 #'gene_state_result <- calc_all_hmm_diff_parallel(selected_result, cls_num = 2, threadnum = 4)
 
 calc_all_hmm_diff_parallel <- function(sorted_gene_exprs_matrix, cls_num = 2, threadnum = 1){
+  require(doParallel)
   total_cells <- ncol(sorted_gene_exprs_matrix)
   total_genes <- nrow(sorted_gene_exprs_matrix)
   #output <- matrix(0, nrow = total_genes, ncol = total_cells)

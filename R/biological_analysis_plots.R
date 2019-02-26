@@ -80,7 +80,7 @@ reassign_hmm <- function(hmm_results, sorted_exprs_val){
       }else{
         new_hmm_results[i, which(hmm_results[i, ]==1)] <- char_vec[val_order[1]]
       }
-      if(length(l1) == 0){
+      if(length(l2) == 0){
       }else{
         new_hmm_results[i, which(hmm_results[i, ]==2)] <- char_vec[val_order[2]]#val_order[2]
       }
@@ -125,9 +125,11 @@ reassign_hmm <- function(hmm_results, sorted_exprs_val){
 #'multiplot(plotlist = hmm_plots, layout = matrix(c(1:10), 5, 2)) # For a total number of 10 plots
 plot_hmm_full <- function(sorted_exprs_val, pseudotime, sorted_hmm_results=NULL, color_label=NULL, num_plots=10){
   output_list <- list()
+  require(ggplot2)
 
   n_results <- nrow(sorted_exprs_val)
   n_cells <- ncol(sorted_exprs_val)
+  #pseudotime <- order(pseudotime)
   
   #sorted_hmm_results <- sorted_hmm_results[c(n_results:(n_results - num_plots + 1)), ]
   sorted_exprs_val <- sorted_exprs_val[c(n_results:(n_results - num_plots + 1)), ]
@@ -153,45 +155,37 @@ plot_hmm_full <- function(sorted_exprs_val, pseudotime, sorted_hmm_results=NULL,
 
     n_col <- length(unique(color_label))
     n_hmm <- length(unique(sorted_hmm_results[1, ]))
-    sorted_hmm_results <- sorted_hmm_results[c(n_results:(n_results - num_plots + 1)), ]
+    sorted_hmm_results <- sorted_hmm_results[c(n_results:(n_results - num_plots + 1)), ]#[c((n_results - num_plots + 1):n_results), ]
     sorted_hmm_results <- reassign_hmm(sorted_hmm_results, sorted_exprs_val)
+    
+    manual_colors <- c(redpath_colorset[1:n_col], hmm_colorset[1:n_hmm])
+    if(n_hmm == 2){
+      manual_labels <- c(unique(color_label[order(pseudotime)]), "Low", "High")
+    }else if(n_hmm ==3){
+      manual_labels <- c(unique(color_label[order(pseudotime)]), "Low", "Medium", "High")
+    }
+    
+    names(manual_colors) <- manual_labels
     
     for(i in c(1:num_plots)){
       headings <- rownames(sorted_exprs_val)[i]
-      col <-sorted_hmm_results[i,]
+      #col <-sorted_hmm_results[i,]
       tmp_data <- data.frame(X = pseudotime[order(pseudotime)],#c(1:n_cells),
                              Y = as.numeric(sorted_exprs_val[i, ]),
                              type_label = as.factor(color_label)[order(pseudotime)])
-      tmp_data2 <- data.frame(x = pseudotime[order(pseudotime)], y = max(sorted_exprs_val[i, ])+5, color = col)
-      g <- ggplot(tmp_data, aes(X, Y, color = type_label))+geom_point(size = 3)+ylim(c(0, max(tmp_data$Y)+2.5))+
-        #scale_fill_brewer(palette=custom_color_set)+#(palette = "Set2")+
-        scale_color_manual(name = "", labels = c(as.character(unique(col)), as.character(unique(color_label[order(pseudotime)]))),
-                           values = c(as.character(hmm_colorset[1:n_hmm]), as.character(redpath_colorset[1:n_col]))) +
-        #scale_color_manual(name = "", values = c(as.character(col[1:n_hmm]), as.character(redpath_colorset[1:n_col]))) +
-        
-        #scale_color_manual(name = "", values = as.character(hmm_colorset)) +
+      tmp_data2 <- data.frame(x = pseudotime[order(pseudotime)], y = max(as.numeric(sorted_exprs_val[i, ]))+2, col_hmm = as.factor(sorted_hmm_results[i, ]))
+      #tmp_data2 <- data.frame(x = c(1:n_cells), y = max(as.numeric(sorted_exprs_val[i, ]))+2, col_hmm = as.factor(sorted_hmm_results[i, ]))
+      
+      g <- ggplot(tmp_data)
+      g <- g + geom_point(aes(x = X, y = Y, color = type_label), size = 3) + coord_cartesian(ylim=c(0, max(tmp_data2$y)+1)) +
+        geom_segment(data = tmp_data2, aes(x = x, xend = x, y = y, yend = y + 2, colour = col_hmm), size = 1.5, show.legend = F) + 
+        scale_color_manual(name = "",
+                           values = manual_colors,
+                           breaks = manual_labels#values = c(redpath_colorset[1:n_col], `Low` = hmm_colorset[1], `Medium` = hmm_colorset[2], `High` = hmm_colorset[3])
+                           )+
         xlab("Differential Time") + ylab("Logged Exprs") + labs(colour = "HMM segmentation", title = headings)+
-        
         redpath_theme()
-      if(n_hmm == 3){
-        g <- g + 
-          geom_segment(data = tmp_data2[which(col=="Low"), ], aes(x = x, xend = x, y = y, yend = y+2, #color = as.factor(col),
-                                                                  colour = as.character(hmm_colorset[1])), size = 1.5, show.legend = F)+
-          geom_segment(data = tmp_data2[which(col =="Medium"), ], aes(x = x, xend = x, y = y, yend = y+2, #color = as.factor(col),
-                                                                      colour = as.character(hmm_colorset[2])), size = 1.5, show.legend = F)+
-          
-          geom_segment(data = tmp_data2[which(col =="High"), ], aes(x = x, xend = x, y = y, yend = y+2, #color = as.factor(col),
-                                                                    colour = as.character(hmm_colorset[3])), size = 1.5, show.legend = F)
-      }else if(n_hmm == 2){
-        g <- g+
-          geom_segment(data = tmp_data2[which(col=="Low"), ], aes(x = x, xend = x, y = y, yend = y+2, #color = as.factor(col),
-                                                                  colour = as.character(hmm_colorset[1])), size = 1.5, show.legend = F)+
-          geom_segment(data = tmp_data2[which(col =="High"), ], aes(x = x, xend = x, y = y, yend = y+2, #color = as.factor(col),
-                                                                    colour = as.character(hmm_colorset[3])), size = 1.5, show.legend = F)
-
-
-          
-      }
+      
       output_list[[i]] <- g
     }
   }else if (!is.null(sorted_hmm_results) & is.null(color_label)) {
@@ -242,6 +236,7 @@ plot_hmm_full <- function(sorted_exprs_val, pseudotime, sorted_hmm_results=NULL,
 
 plot_hmm <- function(sorted_hmm_results, sorted_exprs_val, pseudotime, num_plots){
   output_list <- list()
+  require(ggplot2)
 
   sorted_hmm_results <- reassign_hmm(sorted_hmm_results, sorted_exprs_val)
   n_results <- nrow(sorted_hmm_results)
@@ -287,16 +282,17 @@ plot_hmm <- function(sorted_hmm_results, sorted_exprs_val, pseudotime, num_plots
 #'@param color_label The cell type labels.
 #'@param order If order = T, gene expression change will be plotted against a uniform pseudo time. If order F, it will be plotted against the actual value of the calculated pseudo time.
 #'@export
-#'@keywords plot_gene_exprs
+#'@keywords plot_specific_gene_exprs
 #'@section Biological Analysis:
 #'@examples
 #'cdk_gene_exprs <- get_specific_gene_exprs(full_gene_exprs_data, gene_name = "cdk11", type = "grep", organism = "mm")
-#'plot_cdk <- plot_gene_exprs(cdk_gene_exprs, redpath_pseudotime, color_label = cell_type_label, order = T)
+#'plot_cdk <- plot_specific_gene_exprs(cdk_gene_exprs, redpath_pseudotime, color_label = cell_type_label, order = T)
 #'require(scater)
 #'multiplot(plotlist = plot_cdk, layout = matrix(c(1:2), 2, 1)) # For a total number of 2 plots
 
-plot_gene_exprs <- function(selected_gene, pseudotime, color_label, order = T){
+plot_specific_gene_exprs <- function(selected_gene, pseudotime, color_label, order = T){
   output_list <- list()
+  require(ggplot2)
   if(is.null(dim(selected_gene$exprs))){
     gene_cell_val <- data.frame(t(selected_gene$exprs))
   }else{
@@ -309,7 +305,7 @@ plot_gene_exprs <- function(selected_gene, pseudotime, color_label, order = T){
   # Plot with cell type only
   for(i in c(1:num_plots)){
     n_col <- length(unique(color_label))
-    headings <- selected_gene$namesr#rownames(gene_cell_val)[i]
+    headings <- selected_gene$names[i]#rownames(gene_cell_val)[i]
     if(order == F){
       tmp_data <- data.frame(X = pseudotime,#c(1:n_cells),
                              Y = as.numeric(gene_cell_val[i, ]),
@@ -380,6 +376,7 @@ get_gene_cluster <- function(sorted_matrix, cls_num = 8){
 #'plot(GO_summary_result, fontsize = 8)
 
 infer_GO_summaries <- function(gene_cluster, organism="hsapiens"){
+  require(GOsummaries)
   n_cls <- length(unique(gene_cluster))
   tmp_geneset <- list()
   name_list <- c()
@@ -429,7 +426,7 @@ gene_cluster_colors <-
 #'heatmap_plot <- plot_heatmap_analysis(sorted_matrix = inferred_gene_cluster, redpath_pseudotime, cell_labels = NULL, gene_cluster = inferred_gene_cluster, input_type = "hmm")
 
 plot_heatmap_analysis <- function(sorted_matrix, pseudo_time, cell_labels = NULL, gene_cluster=NULL, heading = "HEATMAP", input_type = "hmm"){
-  
+  require(gplots)
   if(is.null(gene_cluster)){
     gene_cluster <- get_gene_cluster(sorted_matrix)
   }
@@ -521,7 +518,7 @@ plot_heatmap_analysis <- function(sorted_matrix, pseudo_time, cell_labels = NULL
 #'@section Biological Analysis:
 #'@examples
 #'cdk_gene_exprs <- get_specific_gene_exprs(full_gene_exprs_data, gene_name = "cdk11", type = "grep", organism = "mm")
-#'plot_cdk <- plot_gene_exprs(cdk_gene_exprs, redpath_pseudotime, color_label = cell_type_label, order = T)
+#'plot_cdk <- plot_specific_gene_exprs(cdk_gene_exprs, redpath_pseudotime, color_label = cell_type_label, order = T)
 #'require(scater)
 #'multiplot(plotlist = plot_cdk, layout = matrix(c(1:2), 2, 1)) # For a total number of 2 plots
 get_specific_gene_exprs <- function(full_gene_exprs_matrix, gene_name = "cdk", type = "grep", organism = "mm"){
@@ -577,6 +574,7 @@ calc_unit_circle <- function(recat_input){
 #'p1
 plot_cycle_diff_3d <- function (recat_input, redpath_pseudotime, recat_symbol, color_label) 
 {
+  require(plotly)
   rev_complex <- calc_unit_circle(recat_input)
 
     p <- plot_ly(                  x = Re(rev_complex), y = Im(rev_complex), 
@@ -638,6 +636,7 @@ plot_cycle_diff_3d <- function (recat_input, redpath_pseudotime, recat_symbol, c
 plot_diff_3d <- function (recat_input, redpath_pseudotime, color_label = NULL, 
                           marker_gene_exprs = NULL) 
 {
+  require(plotly)
   rev_complex <- calc_unit_circle(recat_input)
   if (is.null(marker_gene_exprs)) {
     p <- plot_ly(x = Re(rev_complex) + redpath_pseudotime, 

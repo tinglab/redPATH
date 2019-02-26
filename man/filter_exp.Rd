@@ -22,7 +22,7 @@ This function reduces the dimensionality by filtering out low dispersion ratio g
 
 \examples{
 subset_GO_data <- get_GO_exp(data, gene_type = "gene_names", organism = "human", takelog = F)
-filtered_GO_data <- filter_exp(subset_GO_data)
+filtered_GO_data <- filter_exp(subset_GO_data, dispersion_threshold = 10, threads = 2)
 
 }
 \keyword{filter_exp}

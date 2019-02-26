@@ -145,7 +145,7 @@ plot_hmm_full <- function(sorted_exprs_val, pseudotime, sorted_hmm_results=NULL,
       tmp_data <- data.frame(X = pseudotime[order(pseudotime)],#c(1:n_cells),
                              Y = as.numeric(sorted_exprs_val[i, ]),
                              type_label = as.factor(color_label)[order(pseudotime)])
-      tmp_data2 <- data.frame(x = pseudotime[order(pseudotime)], y = max(sorted_exprs_val[i, ])+5, color = col)
+      tmp_data2 <- data.frame(x = pseudotime[order(pseudotime)], y = max(sorted_exprs_val[i, ])+2.5, color = as.factor(sorted_hmm_results[i, ]))
       g <- ggplot(tmp_data, aes(X, Y, color = type_label))+geom_point(size = 3)+
         #scale_fill_brewer(palette=custom_color_set)+#(palette = "Set2")+
         scale_color_manual(name = "", labels = c(as.character(unique(col)), as.character(unique(color_label[order(pseudotime)]))),
@@ -158,19 +158,19 @@ plot_hmm_full <- function(sorted_exprs_val, pseudotime, sorted_hmm_results=NULL,
         redpath_theme()
       if(n_hmm == 3){
         g <- g + 
-          geom_segment(data = tmp_data2[which(col=="Low"), ], aes(x = x, xend = x, y = y, yend = y+2, #color = as.factor(col),
-                                                                  colour = as.character(hmm_colorset[1])), size = 1.5, show.legend = F)+
-          geom_segment(data = tmp_data2[which(col =="Medium"), ], aes(x = x, xend = x, y = y, yend = y+2, #color = as.factor(col),
-                                                                      colour = as.character(hmm_colorset[2])), size = 1.5, show.legend = F)+
+          geom_segment(data = tmp_data2[which(col=="Low"), ], aes(x = x, xend = x, y = y, yend = y+2, color = as.factor(color)),
+                                                                  colour = as.character(hmm_colorset[1]), size = 1.5, show.legend = F)+
+          geom_segment(data = tmp_data2[which(col =="Medium"), ], aes(x = x, xend = x, y = y, yend = y+2,color = as.factor(color)),
+                                                                      colour = as.character(hmm_colorset[2]), size = 1.5, show.legend = F)+
           
-          geom_segment(data = tmp_data2[which(col =="High"), ], aes(x = x, xend = x, y = y, yend = y+2, #color = as.factor(col),
-                                                                    colour = as.character(hmm_colorset[3])), size = 1.5, show.legend = F)
+          geom_segment(data = tmp_data2[which(col =="High"), ], aes(x = x, xend = x, y = y, yend = y+2, color = as.factor(color)),
+                                                                    colour = as.character(hmm_colorset[3]), size = 1.5, show.legend = F)
       }else if(n_hmm == 2){
         g <- g+
-          geom_segment(data = tmp_data2[which(col=="Low"), ], aes(x = x, xend = x, y = y, yend = y+2, #color = as.factor(col),
-                                                                  colour = as.character(hmm_colorset[1])), size = 1.5, show.legend = F)+
-          geom_segment(data = tmp_data2[which(col =="High"), ], aes(x = x, xend = x, y = y, yend = y+2, #color = as.factor(col),
-                                                                    colour = as.character(hmm_colorset[3])), size = 1.5, show.legend = F)
+          geom_segment(data = tmp_data2[which(col=="Low"), ], aes(x = x, xend = x, y = y, yend = y+2, color = as.factor(color)),
+                                                                  colour = as.character(hmm_colorset[1]), size = 1.5, show.legend = F)+
+          geom_segment(data = tmp_data2[which(col =="Medium"), ], aes(x = x, xend = x, y = y, yend = y+2, color = as.factor(color)),
+                                                                    colour = as.character(hmm_colorset[c(1,3)]), size = 1.5, show.legend = F)
 
 
           

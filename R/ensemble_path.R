@@ -110,6 +110,7 @@ bestEnsembleHMT <- function(cell_gene_exprs, stageIdxSmp = NULL, HMT_iterations,
     # parallel processing
     cl <- makeCluster(threads)
     registerDoParallel(cl)
+    require(mclust)
     HMT_list <- foreach(clust_num_EM = seq_list, .combine = 'rbind', .export = c("high_cor_path", "hamiltonian_path_force", "corr_dist", "normalizeResult2", 
                                                                                  "Mclust", "mclustBIC","hamiltonian_path_as", "path_length", "ED2")) %dopar%
     {

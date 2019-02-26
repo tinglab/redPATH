@@ -42,6 +42,8 @@ kmeans_clustering <- function(mean_scores, k = 5, nstart = 100){
 
 statistical_test <- function(mean_scores, kmean_result, threshold = 0.001){
   # find cluster with lowest mean
+  require(car)
+  require(dplyr)
   mean_val <- matrix(0, nrow = length(kmean_result), ncol = 6)
   for(i in 1:length(kmean_result)){
     mean_v <- colMeans(mean_scores[which(kmean_result == i),])

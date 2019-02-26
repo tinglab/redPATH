@@ -84,7 +84,7 @@ multiplot(plotlist = plot_cdk, layout = matrix(c(1:2), 2, 1)) # For a total numb
 
 #### - Biological Analysis
 
-1. Discovery of potential marker genes
+##### 1. Discovery of potential marker genes
 ```
 # Distance Correlation and Maximal Information Coefficient calculation
 dcor_result <- calc_correlation(full_exprs_matrix = input_data, redpath_pseudotime, type = "dcor") 
@@ -100,9 +100,9 @@ selected_result <- gene_selection_intersection(full_exprs_matrix = input_data, r
 
 ```
 
-2. Heatmap & Gene Ontology Analysis
+###### 2. Heatmap & Gene Ontology Analysis
 
-#### - Producing heatmaps
+- Producing heatmaps
 
 ```
 # Calculating the ON/HIGH or OFF/LOW state of each cell for each gene.
@@ -122,7 +122,7 @@ heatmap_plot <- plot_heatmap_analysis(sorted_matrix = inferred_gene_cluster, red
 
 ```
 
-#### - Gene Ontology plots
+- Gene Ontology plots
 
 ```
 GO_summary_result <- infer_GO_summaries(inferred_gene_cluster, organism = "mmusculus")
@@ -130,16 +130,17 @@ plot(GO_summary_result, fontsize = 8)
 
 ```
 
-3. 3D Cell proliferation and differentiation plots:
+##### 3. 3D Cell proliferation and differentiation plots:
 
-#### - 3D plot with cell type labels and cell cycle stages
+- 3D plot with cell type labels and cell cycle stages
 ```
 # normalizedResultLst can be loaded from the output .RData file from reCAT.
 p1 <- plot_cycle_diff_3d(normalizedResultLst, redpath_pseudotime, cell_cycle_labels, cell_type_labels)
 p1
+
 ```
 
-#### - Plot with marker gene
+- Plot with marker gene
 
 ```
 # normalizedResultLst can be loaded from the output .RData file from reCAT.
@@ -148,13 +149,17 @@ p1
 cdk_gene_exprs <- get_specific_gene_exprs(input_data, gene_name = "cdk11", type = "match", organism = "mm")
 p1 <- plot_diff_3d(normalizedResultLst, redpath_pseudotime, cell_cycle_labels, cdk_gene_exprs)
 p1
+
 ```
+
+
 ### Citation & References
 
 This work is currently under submission. Reconstructing the pseudo development time of cell lineages in single-cell RNA-seq data and applications in cancer.
 
 ###### 1. Llorens-Bobadilla, E., Zhao, S., Baser, A., Saiz-Castro, G., Zwadlo, K. and Martin-Villalba, A. (2015) Single-Cell Transcriptomics Reveals a Population of Dormant Neural Stem Cells that Become Activated upon Brain Injury. Cell Stem Cell, 17, 329-340.
 ###### 2. Venteicher, A.S., Tirosh, I., Hebert, C., Yizhak, K., Neftel, C., Filbin, M.G., Hovestadt, V., Escalante, L.E., Shaw, M.L., Rodman, C. et al. (2017) Decoupling genetics, lineages, and microenvironment in IDH-mutant gliomas by single-cell RNA-seq. Science, 355.
+
 
 ### Maintenance
 

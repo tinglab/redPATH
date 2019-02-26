@@ -27,15 +27,13 @@ setwd("where redPATH folder is located")
 install("redPATH", args = c("--no-multiarch")
 ```
 ### Example Usage:
-- [Preprocessing]
+#### - Preprocessing
 
 Assuming your input data is a m genes (rows) by n cells (cols) matrix.
 Here, a neural stem cell (145 celss) dataset from 2015 is used as an example analysis.
-
 Llorens-Bobadilla, E., Zhao, S., Baser, A., Saiz-Castro, G., Zwadlo, K. and Martin-Villalba, A. (2015) Single-Cell Transcriptomics Reveals a Population of Dormant Neural Stem Cells that Become Activated upon Brain Injury. Cell Stem Cell, 17, 329-340.
 
 A diseased MGH107 dataset is also provided as a sample data (252 cells).
-
 Venteicher, A.S., Tirosh, I., Hebert, C., Yizhak, K., Neftel, C., Filbin, M.G., Hovestadt, V., Escalante, L.E., Shaw, M.L., Rodman, C. et al. (2017) Decoupling genetics, lineages, and microenvironment in IDH-mutant gliomas by single-cell RNA-seq. Science, 355.
 
 ```
@@ -70,7 +68,7 @@ d2 <- mean_score_plot(sample_mean_score$mean_scores, kmeans_clusters, reCAT_ordI
 
 ```
 
-- [redPATH pseudotime]
+#### - redPATH pseudotime
 
 ```
 redpath_pseudotime <- redpath(filtered_GO_data, threadnum = 4, base_path_range = c(4:8))
@@ -85,7 +83,7 @@ multiplot(plotlist = plot_cdk, layout = matrix(c(1:2), 2, 1)) # For a total numb
 
 ```
 
-- [Biological Analysis]
+#### - Biological Analysis
 
 1. Discovery of potential marker genes
 ```
@@ -105,7 +103,7 @@ selected_result <- gene_selection_intersection(full_exprs_matrix = input_data, r
 
 2. Heatmap & Gene Ontology Analysis
 
-- [Producing heatmaps]
+#### - Producing heatmaps
 
 ```
 # Calculating the ON/HIGH or OFF/LOW state of each cell for each gene.
@@ -125,7 +123,7 @@ heatmap_plot <- plot_heatmap_analysis(sorted_matrix = inferred_gene_cluster, red
 
 ```
 
-- [Gene Ontology plots]
+#### - Gene Ontology plots
 
 ```
 GO_summary_result <- infer_GO_summaries(inferred_gene_cluster, organism = "mmusculus")
@@ -135,14 +133,14 @@ plot(GO_summary_result, fontsize = 8)
 
 3. 3D Cell proliferation and differentiation plots:
 
-- [3D plot with cell type labels and cell cycle stages]
+#### - 3D plot with cell type labels and cell cycle stages
 ```
 # normalizedResultLst can be loaded from the output .RData file from reCAT.
 p1 <- plot_cycle_diff_3d(normalizedResultLst, redpath_pseudotime, cell_cycle_labels, cell_type_labels)
 p1
 ```
 
-- [Plot with marker gene]
+#### - Plot with marker gene
 
 ```
 # normalizedResultLst can be loaded from the output .RData file from reCAT.

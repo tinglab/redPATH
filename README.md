@@ -6,7 +6,6 @@ redPATH
 
 <p align = "center">
 <img src=sample_results/overview.png alt="Overview" title="Overview" align="centre" height="300">
- /p>
 
 
 ## Table of content
@@ -34,11 +33,7 @@ install("redPATH", args = c("--no-multiarch")
 #### - Preprocessing
 
 Assuming your input data is a m genes (rows) by n cells (cols) matrix.
-Here, a neural stem cell (145 celss) dataset from 2015 is used as an example analysis.
-Llorens-Bobadilla, E., Zhao, S., Baser, A., Saiz-Castro, G., Zwadlo, K. and Martin-Villalba, A. (2015) Single-Cell Transcriptomics Reveals a Population of Dormant Neural Stem Cells that Become Activated upon Brain Injury. Cell Stem Cell, 17, 329-340.
-
-A diseased MGH107 dataset is also provided as a sample data (252 cells).
-Venteicher, A.S., Tirosh, I., Hebert, C., Yizhak, K., Neftel, C., Filbin, M.G., Hovestadt, V., Escalante, L.E., Shaw, M.L., Rodman, C. et al. (2017) Decoupling genetics, lineages, and microenvironment in IDH-mutant gliomas by single-cell RNA-seq. Science, 355.
+Here, a neural stem cell (145 cells) dataset from 2015 (1) is used as an example analysis and a diseased example (MGH107 - 252 cells) dataset is also provided from 2017 (2).
 
 ```
 library(redPATH)
@@ -154,9 +149,12 @@ cdk_gene_exprs <- get_specific_gene_exprs(input_data, gene_name = "cdk11", type 
 p1 <- plot_diff_3d(normalizedResultLst, redpath_pseudotime, cell_cycle_labels, cdk_gene_exprs)
 p1
 ```
-### Citation & Acknowledgements
+### Citation & References
 
 This work is currently under submission. Reconstructing the pseudo development time of cell lineages in single-cell RNA-seq data and applications in cancer.
+
+###### 1. Llorens-Bobadilla, E., Zhao, S., Baser, A., Saiz-Castro, G., Zwadlo, K. and Martin-Villalba, A. (2015) Single-Cell Transcriptomics Reveals a Population of Dormant Neural Stem Cells that Become Activated upon Brain Injury. Cell Stem Cell, 17, 329-340.
+###### 2. Venteicher, A.S., Tirosh, I., Hebert, C., Yizhak, K., Neftel, C., Filbin, M.G., Hovestadt, V., Escalante, L.E., Shaw, M.L., Rodman, C. et al. (2017) Decoupling genetics, lineages, and microenvironment in IDH-mutant gliomas by single-cell RNA-seq. Science, 355.
 
 ### Maintenance
 

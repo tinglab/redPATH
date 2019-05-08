@@ -1,0 +1,14 @@
+Package: redPATH
+Title: Reconstructing the pseudo development time of cell lineages in single cell RNA-Seq data and applications in cancer.
+Version: 1.1.0
+Authors@R: c(
+    person("Ken (Kaikun)", "Xie", email = "xkk17@mails.tsinghua.edu.cn", role = c("aut", "cph", "cre")),
+    person("Zehua", "Liu", role = c("cph", "aut")))
+Description: What the package does (one paragraph).
+Depends: R (>= 3.4.0)
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+LinkingTo: Rcpp, RcppArmadillo
+Imports: car, combinat, doParallel, dplyr, ggplot2, GOsummaries, gplots, MASS, mclust, plotly, Rcpp, RcppAlgos, RcppArmadillo, scater
+RoxygenNote: 6.1.1.9000
